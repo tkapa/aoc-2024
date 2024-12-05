@@ -22,18 +22,32 @@ import (
 // Diff Abs(x - y): 2,1,0,1,2,5
 // Total Diff: 11
 
-func TestHysteriaSimple(t *testing.T) {
+func TestHysteriaCompareSimple(t *testing.T) {
 
 	// Arrange
 	list1 := []int{3, 4, 2, 1, 3, 3}
 	list2 := []int{4, 3, 5, 3, 9, 3}
 
 	// Act
-	diff := Hysteria(list1, list2)
+	diff := HysteriaCompare(list1, list2)
 
 	// Assert
 	if diff != 11 {
 		t.Fatalf("Diff was not correct, expected 11, got: %v", diff)
+	}
+}
+
+func TestHysteriaSimilaritySimple(t *testing.T) {
+	// Arrange
+	list1 := []int{3, 4, 2, 1, 3, 3}
+	list2 := []int{4, 3, 5, 3, 9, 3}
+
+	// Act
+	similarity := HysteriaSimilarity(list1, list2)
+
+	// Assert
+	if similarity != 31 {
+		t.Fatalf("Diff was not correct, expected 31, got: %v", similarity)
 	}
 }
 
@@ -60,17 +74,30 @@ func TestHysteriaReadFile(t *testing.T) {
 	}
 }
 
-func TestDay1Input(t *testing.T) {
+func TestDay1HysteriaCompare(t *testing.T) {
 	inputFile := "./input.txt"
 
 	list1, list2 := HysteriaReadFile(inputFile)
 
-	diff := Hysteria(list1, list2)
+	diff := HysteriaCompare(list1, list2)
 
 	fmt.Println("List Diff: ", diff)
 
 	if diff != 2113135 {
-		t.Fatalf("List diff is not correct!")
+		t.Fatalf("List diff is not correct! Expected: 2113135 Got: %v", diff)
+	}
+}
+
+func TestDay1HysteriaSimilarity(t *testing.T) {
+	inputFile := "./input.txt"
+
+	list1, list2 := HysteriaReadFile(inputFile)
+
+	similarity := HysteriaSimilarity(list1, list2)
+
+	// Assert
+	if similarity != 19097157 {
+		t.Fatalf("List similarity is not correct! Expected: 19097157 Got: %v", similarity)
 	}
 }
 
