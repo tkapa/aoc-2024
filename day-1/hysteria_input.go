@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 )
 
 func check(e error) {
@@ -22,21 +23,17 @@ func HysteriaReadFile(file string) ([]int, []int) {
 	var list2 []int
 
 	scanner := bufio.NewScanner(f)
-	scanner.Split(bufio.ScanWords)
-	i := 1
 	for scanner.Scan() {
-		str := scanner.Text()
-		num, err := strconv.Atoi(str)
+		line := scanner.Text()
+		numbers := strings.Fields(line)
+
+		left, err := strconv.Atoi(numbers[0])
 		check(err)
-		fmt.Println(scanner.Text())
+		list1 = append(list1, left)
 
-		if i%2 == 0 {
-			list2 = append(list2, num)
-		} else {
-			list1 = append(list1, num)
-		}
-
-		i++
+		right, err := strconv.Atoi(numbers[1])
+		check(err)
+		list2 = append(list2, right)
 	}
 
 	if err := scanner.Err(); err != nil {

@@ -60,11 +60,6 @@ func TestHysteriaReadFile(t *testing.T) {
 	// Act
 	res1, res2 := HysteriaReadFile(fileName)
 
-	fmt.Println("List 1: ", list1)
-	fmt.Println("List 2: ", list2)
-	fmt.Println("Res 1: ", res1)
-	fmt.Println("Res 2: ", res2)
-
 	// Assert
 	if !compareSlice(list1, res1) {
 		t.Fatalf("List 1 not equal to Res 1")
@@ -80,8 +75,6 @@ func TestDay1HysteriaCompare(t *testing.T) {
 	list1, list2 := HysteriaReadFile(inputFile)
 
 	diff := HysteriaCompare(list1, list2)
-
-	fmt.Println("List Diff: ", diff)
 
 	if diff != 2113135 {
 		t.Fatalf("List diff is not correct! Expected: 2113135 Got: %v", diff)
