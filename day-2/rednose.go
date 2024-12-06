@@ -27,14 +27,10 @@ func RednoseSafeReports(reports [][]int) int {
 			fmt.Println(diff)
 			y++
 
-			if isIncreasing && diff < 0 {
-				safeReports--
-				break
-			} else if !isIncreasing && diff > 0 {
-				safeReports--
-				break
-			}
-			if math.Abs(float64(diff)) > 3 || diff == 0 {
+			if (isIncreasing && diff < 0) ||
+				(!isIncreasing && diff > 0) ||
+				(math.Abs(float64(diff)) > 3) ||
+				diff == 0 {
 				safeReports--
 				break
 			}
