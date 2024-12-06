@@ -6,30 +6,45 @@ import (
 	"slices"
 )
 
-func RednoseSafeReports(reports [][]int, tryDampen bool) int {
+func RednoseSafeReports(reports [][]int) int {
 	safeReports := len(reports)
 
 	x := 0
 	for x < len(reports) {
 		thisRep := reports[x]
-		repSafe, probIdx1 := RednoseIsReportSafe(thisRep)
+		repSafe := RednoseIsReportSafe(thisRep)
 
-		if !repSafe && tryDampen {
-			nRep1 := make([]int, len(thisRep))
-			copy(nRep1, thisRep)
-			nRep1 = slices.Delete(nRep1, probIdx1, probIdx1+1)
-			nRep2 := make([]int, len(thisRep))
-			copy(nRep2, thisRep)
-			nRep2 = slices.Delete(nRep2, probIdx1+1, probIdx1+2)
+		if !repSafe {
+			safeReports--
+		}
 
-			rep1Safe, _ := RednoseIsReportSafe(nRep1)
-			rep2Safe, _ := RednoseIsReportSafe(nRep2)
+		x++
+	}
 
-			repSafe = rep1Safe || rep2Safe
+	return safeReports
+}
 
-			fmt.Println("Skip Index ", probIdx1)
-			fmt.Println(nRep1, nRep2)
-			fmt.Printf("Rep Safe: %v\n", repSafe)
+func RednoseSafeReportsWithDampening(reports [][]int) int {
+
+	safeReports := len(reports)
+
+	x := 0
+	for x < len(reports) {
+		thisRep := reports[x]
+		repSafe := RednoseIsReportSafe(thisRep)
+
+		if !repSafe {
+			for y := range len(thisRep) {
+				cpRep := make([]int, len(thisRep))
+				copy(cpRep, thisRep)
+				cpRep = slices.Delete(cpRep, y, y+1)
+				dmpnSafe := RednoseIsReportSafe(cpRep)
+
+				if dmpnSafe {
+					repSafe = true
+					break
+				}
+			}
 		}
 
 		if !repSafe {
@@ -42,7 +57,7 @@ func RednoseSafeReports(reports [][]int, tryDampen bool) int {
 	return safeReports
 }
 
-func RednoseIsReportSafe(report []int) (bool, int) {
+func RednoseIsReportSafe(report []int) bool {
 	isIncreasing := true
 	y := 0
 
@@ -60,7 +75,7 @@ func RednoseIsReportSafe(report []int) (bool, int) {
 
 		// Diff must be at least one and no more than 3
 		if DiffIsLessThan3AndAbove0(diff) {
-			return false, y
+			return false
 		}
 
 		// All Increasing / Decreasing
@@ -72,17 +87,17 @@ func RednoseIsReportSafe(report []int) (bool, int) {
 
 		if isIncreasing && !HasIncreased(diff) {
 			// fmt.Println("No Incr:", y, nextIdx, diff, isIncreasing)
-			return false, y
+			return false
 		} else if !isIncreasing && HasIncreased(diff) {
 			// fmt.Println("No Decr:", y, nextIdx, diff, isIncreasing)
-			return false, y
+			return false
 		}
 
 		y++
 	}
 
 	fmt.Println(report)
-	return true, -1
+	return true
 }
 
 func DiffIsLessThan3AndAbove0(diff int) bool {

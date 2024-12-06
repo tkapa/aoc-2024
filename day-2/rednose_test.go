@@ -26,7 +26,7 @@ func TestRednoseSafeReportsSimpleNoDampening(t *testing.T) {
 	matrix[5] = []int{1, 3, 6, 7, 9}
 
 	// Act
-	safeReps := RednoseSafeReports(matrix, false)
+	safeReps := RednoseSafeReports(matrix)
 
 	// Assert
 	if safeReps != 2 {
@@ -46,7 +46,7 @@ func TestRednoseSafeReportsSimpleWithDampening(t *testing.T) {
 	matrix[5] = []int{1, 3, 6, 7, 9}
 
 	// Act
-	safeReps := RednoseSafeReports(matrix, true)
+	safeReps := RednoseSafeReportsWithDampening(matrix)
 
 	// Assert
 	if safeReps != 4 {
@@ -59,7 +59,7 @@ func TestRednoseSafeReportsTestInputSimpleNoDampening(t *testing.T) {
 	matrix := RednoseReadFile("./test.txt")
 
 	// Act
-	safeReps := RednoseSafeReports(matrix, false)
+	safeReps := RednoseSafeReports(matrix)
 
 	// Assert
 	if safeReps != 2 {
@@ -72,7 +72,7 @@ func TestDay2RednoseSafeReportsNoDampening(t *testing.T) {
 
 	matrix := RednoseReadFile(inputFile)
 
-	safeReps := RednoseSafeReports(matrix, false)
+	safeReps := RednoseSafeReports(matrix)
 
 	fmt.Printf("Safe Reports: %v", safeReps)
 
@@ -86,9 +86,13 @@ func TestDay2RednoseSafeReportsWithDampening(t *testing.T) {
 
 	matrix := RednoseReadFile(inputFile)
 
-	safeReps := RednoseSafeReports(matrix, true)
+	safeReps := RednoseSafeReportsWithDampening(matrix)
 
 	fmt.Printf("Safe Reports: %v", safeReps)
+
+	if safeReps != 488 {
+		t.Fatalf("Expected 432 Safe Reports, Found: %v", safeReps)
+	}
 }
 
 // func zzTestRednoseIsReportSafeNoDampening(t *testing.T) {
