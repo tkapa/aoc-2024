@@ -3,22 +3,48 @@ package rednose
 import (
 	"fmt"
 	"math"
+	"slices"
 )
 
-func RednoseSafeReports(reports [][]int, tryDampen bool) int {
+func RednoseSafeReports(reports [][]int) int {
 	safeReports := len(reports)
 
 	x := 0
 	for x < len(reports) {
-		fmt.Println(reports[x])
+		thisRep := reports[x]
+		repSafe := RednoseIsReportSafe(thisRep)
 
-		repSafe, probIdx1, probIdx2 := RednoseIsReportSafe(reports[x], -1)
+		if !repSafe {
+			safeReports--
+		}
 
-		if !repSafe && tryDampen {
-			fixedRep1, _, _ := RednoseIsReportSafe(reports[x], probIdx1)
-			fixedRep2, _, _ := RednoseIsReportSafe(reports[x], probIdx2)
+		x++
+	}
 
-			repSafe = fixedRep1 || fixedRep2
+	return safeReports
+}
+
+func RednoseSafeReportsWithDampening(reports [][]int) int {
+
+	safeReports := len(reports)
+
+	x := 0
+	for x < len(reports) {
+		thisRep := reports[x]
+		repSafe := RednoseIsReportSafe(thisRep)
+
+		if !repSafe {
+			for y := range len(thisRep) {
+				cpRep := make([]int, len(thisRep))
+				copy(cpRep, thisRep)
+				cpRep = slices.Delete(cpRep, y, y+1)
+				dmpnSafe := RednoseIsReportSafe(cpRep)
+
+				if dmpnSafe {
+					repSafe = true
+					break
+				}
+			}
 		}
 
 		if !repSafe {
@@ -31,53 +57,53 @@ func RednoseSafeReports(reports [][]int, tryDampen bool) int {
 	return safeReports
 }
 
-func RednoseIsReportSafe(report []int, skipIdx int) (bool, int, int) {
+func RednoseIsReportSafe(report []int) bool {
 	isIncreasing := true
 	y := 0
 
-	if skipIdx > len(report) {
-		return false, -1, -1
-	}
-
-	fmt.Printf("Rep: %v\n", report)
-
-	if skipIdx > -1 {
-		fmt.Printf("Skip Index: %v\n", skipIdx)
-	}
-
 	for y <= len(report)-2 {
-		value := report[y]
 		nextIdx := y + 1
-
-		if y == skipIdx-1 {
-			nextIdx = skipIdx + 1
-		} else if y == skipIdx {
-			y++
-			continue
-		}
 
 		if nextIdx > len(report)-1 {
 			y++
 			continue
 		}
 
+		value := report[y]
 		nextValue := report[nextIdx]
-
 		diff := value - nextValue
 
-		if (y == 0 || (skipIdx == 0 && y == 1)) && diff < 0 {
+		// Diff must be at least one and no more than 3
+		if DiffIsLessThan3AndAbove0(diff) {
+			return false
+		}
+
+		// All Increasing / Decreasing
+		// Negative Diff Should Indicate an Increase (3->4 = Diff -1)
+		// Positive Diff Should Indicate a Decrease (4->3 = Diff 1)
+		if y == 0 && diff > 0 {
 			isIncreasing = false
 		}
 
-		y++
-
-		if (isIncreasing && diff < 0) ||
-			(!isIncreasing && diff > 0) ||
-			(math.Abs(float64(diff)) > 3) ||
-			diff == 0 {
-			return false, y, nextIdx
+		if isIncreasing && !HasIncreased(diff) {
+			// fmt.Println("No Incr:", y, nextIdx, diff, isIncreasing)
+			return false
+		} else if !isIncreasing && HasIncreased(diff) {
+			// fmt.Println("No Decr:", y, nextIdx, diff, isIncreasing)
+			return false
 		}
+
+		y++
 	}
 
-	return true, -1, -1
+	fmt.Println(report)
+	return true
+}
+
+func DiffIsLessThan3AndAbove0(diff int) bool {
+	return diff == 0 || (math.Abs(float64(diff)) > 3)
+}
+
+func HasIncreased(diff int) bool {
+	return diff < 0
 }
