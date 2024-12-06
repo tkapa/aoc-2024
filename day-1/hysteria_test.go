@@ -105,7 +105,7 @@ func TestCompareSlice(t *testing.T) {
 
 func compareSlice(a, b []int) bool {
 	if len(a) != len(b) {
-		fmt.Println("Length Doesn't Mat")
+		fmt.Println("Length Doesn't Match")
 		return false
 	}
 	for i := range a {
