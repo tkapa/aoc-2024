@@ -43,13 +43,24 @@ func TestMullGetMulTotalSimpleInput(t *testing.T) {
 	}
 }
 
-func TestMullGetMulTotalComplexInput(t *testing.T) {
+func TestMullGetMulTotalSimpleComplexInput(t *testing.T) {
+	fileName := "./input.txt"
+
+	str := MullReadFile(fileName)
+	total := MullGetMulTotalSimple(str)
+
+	if total != 161085926 {
+		t.Fatalf("Expected 82045421, got %v", total)
+	}
+}
+
+func TestMullGetMulTotalDoDontComplexInput(t *testing.T) {
 	fileName := "./input.txt"
 
 	str := MullReadFile(fileName)
 	total := MullGetMulTotalDoDont(str)
 
 	if total != 82045421 {
-		t.Fatalf("Expected 4, got %v", total)
+		t.Fatalf("Expected 82045421, got %v", total)
 	}
 }
